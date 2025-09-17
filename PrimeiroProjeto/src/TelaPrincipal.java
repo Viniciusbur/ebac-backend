@@ -1,4 +1,6 @@
 
+import dao.ClienteMapDAO;
+import dao.IClienteDAO;
 import domain.Cliente;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -13,23 +15,23 @@ import javax.swing.table.DefaultTableModel;
  */
 public class TelaPrincipal extends javax.swing.JFrame {
 
-    
-    
+    private IClienteDAO clienteDAO = new ClienteMapDAO();
+
     /**
      * Creates new form TelaPrincipal
      */
     public TelaPrincipal() {
         initComponents();
         DefaultTableModel modeloTabela = new DefaultTableModel(
-        new Object[][]{},
-        new String[]{"Nome", "CPF"}
-    ) {
-        @Override
-        public boolean isCellEditable(int row, int column) {
-            return false; // bloqueia edição nas células
-        }
-    };
-        
+                new Object[][]{},
+                new String[]{"Nome", "CPF"}
+        ) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // bloqueia edição nas células
+            }
+        };
+
         tabelaClientes.setModel(modeloTabela);
 
     }
@@ -44,13 +46,25 @@ public class TelaPrincipal extends javax.swing.JFrame {
     private void initComponents() {
 
         lblCpf = new javax.swing.JLabel();
-        txtCpf = new javax.swing.JTextField();
         btnSalvar = new javax.swing.JButton();
         lblNome = new javax.swing.JLabel();
         txtNome = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaClientes = new javax.swing.JTable();
         btnExcluir = new javax.swing.JButton();
+        lblTelefone = new javax.swing.JLabel();
+        txtTelefone = new javax.swing.JTextField();
+        lblEndereco = new javax.swing.JLabel();
+        lblCidade = new javax.swing.JLabel();
+        lblNumero = new javax.swing.JLabel();
+        lblEstado = new javax.swing.JLabel();
+        txtEndereco = new javax.swing.JTextField();
+        txtNumero = new javax.swing.JTextField();
+        txtCidade = new javax.swing.JTextField();
+        txtEstado = new javax.swing.JTextField();
+        btnEditar = new javax.swing.JButton();
+        txtCpf = new javax.swing.JFormattedTextField();
+        btnNovo = new javax.swing.JButton();
         jMenuBar1 = new javax.swing.JMenuBar();
         jMenu1 = new javax.swing.JMenu();
         menuItemSair = new javax.swing.JMenu();
@@ -59,12 +73,6 @@ public class TelaPrincipal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         lblCpf.setText("Cpf:");
-
-        txtCpf.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                txtCpfActionPerformed(evt);
-            }
-        });
 
         btnSalvar.setText("Salvar");
         btnSalvar.addActionListener(new java.awt.event.ActionListener() {
@@ -77,15 +85,15 @@ public class TelaPrincipal extends javax.swing.JFrame {
 
         tabelaClientes.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null},
-                {null, null}
+                {null, null, null},
+                {null, null, null}
             },
             new String [] {
-                "Nome", "CPF"
+                "Nome", "CPF", "Telefone"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class
+                java.lang.String.class, java.lang.String.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -103,6 +111,47 @@ public class TelaPrincipal extends javax.swing.JFrame {
         btnExcluir.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 btnExcluirActionPerformed(evt);
+            }
+        });
+
+        lblTelefone.setText("Telefone:");
+
+        lblEndereco.setText("Endereço:");
+
+        lblCidade.setText("Cidade:");
+
+        lblNumero.setText("Numero:");
+
+        lblEstado.setText("Estado:");
+
+        txtNumero.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtNumeroActionPerformed(evt);
+            }
+        });
+
+        btnEditar.setText("Editar");
+        btnEditar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnEditarActionPerformed(evt);
+            }
+        });
+
+        try {
+            txtCpf.setFormatterFactory(new javax.swing.text.DefaultFormatterFactory(new javax.swing.text.MaskFormatter("###-###.###-##")));
+        } catch (java.text.ParseException ex) {
+            ex.printStackTrace();
+        }
+        txtCpf.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCpfActionPerformed(evt);
+            }
+        });
+
+        btnNovo.setText("Novo");
+        btnNovo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnNovoActionPerformed(evt);
             }
         });
 
@@ -134,24 +183,50 @@ public class TelaPrincipal extends javax.swing.JFrame {
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(lblCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 128, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                        .addComponent(lblNome, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jScrollPane1)
+                        .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtNome)
+                            .addComponent(lblTelefone)
+                            .addComponent(lblCpf, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtCpf)
+                            .addComponent(txtTelefone, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(txtEndereco, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE)
+                            .addComponent(txtCidade, javax.swing.GroupLayout.DEFAULT_SIZE, 139, Short.MAX_VALUE))
+                        .addGap(7, 7, 7)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(btnSalvar)
-                                .addGap(18, 18, 18)
-                                .addComponent(btnExcluir)
-                                .addGap(0, 0, Short.MAX_VALUE)))))
+                                .addComponent(lblNome, javax.swing.GroupLayout.PREFERRED_SIZE, 46, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, 208, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblNumero)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtNumero))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(lblEstado)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(txtEstado)))
+                        .addGap(236, 236, Short.MAX_VALUE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(lblCidade)
+                            .addComponent(lblEndereco))
+                        .addGap(0, 0, Short.MAX_VALUE))))
+            .addGroup(layout.createSequentialGroup()
+                .addGap(128, 128, 128)
+                .addComponent(btnSalvar)
+                .addGap(18, 18, 18)
+                .addComponent(btnExcluir)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(btnEditar)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 454, Short.MAX_VALUE)
-                .addContainerGap())
+                .addComponent(btnNovo)
+                .addGap(0, 0, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -159,102 +234,219 @@ public class TelaPrincipal extends javax.swing.JFrame {
                 .addGap(16, 16, 16)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblCpf)
-                    .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(lblNome)
-                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 251, Short.MAX_VALUE)
+                    .addComponent(txtNome, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCpf, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTelefone)
+                    .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblEndereco)
+                    .addComponent(lblNumero)
+                    .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblCidade)
+                    .addComponent(lblEstado)
+                    .addComponent(txtCidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEstado, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 224, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnSalvar)
-                    .addComponent(btnExcluir))
-                .addContainerGap())
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                .addGap(35, 35, 35))
+                    .addComponent(btnExcluir)
+                    .addComponent(btnEditar)
+                    .addComponent(btnNovo))
+                .addGap(13, 13, 13))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuItemSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuItemSairActionPerformed
-int opcao = JOptionPane.showConfirmDialog(
-        null,
-        "Deseja realmente sair?",
-        "Confirmação de Saída",
-        JOptionPane.YES_NO_OPTION
-    );
+        int opcao = JOptionPane.showConfirmDialog(
+                null,
+                "Deseja realmente sair?",
+                "Confirmação de Saída",
+                JOptionPane.YES_NO_OPTION
+        );
 
-    if (opcao == JOptionPane.YES_OPTION) {
-        System.exit(0);
-    }
+        if (opcao == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_menuItemSairActionPerformed
 
     private void menuSubItemSairActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSubItemSairActionPerformed
-int opcao = JOptionPane.showConfirmDialog(
-        null,
-        "Deseja realmente sair?",
-        "Confirmação de Saída",
-        JOptionPane.YES_NO_OPTION
-    );
+        int opcao = JOptionPane.showConfirmDialog(
+                null,
+                "Deseja realmente sair?",
+                "Confirmação de Saída",
+                JOptionPane.YES_NO_OPTION
+        );
 
-    if (opcao == JOptionPane.YES_OPTION) {
-        System.exit(0);
-    }
+        if (opcao == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        }
     }//GEN-LAST:event_menuSubItemSairActionPerformed
 
     private void btnSalvarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalvarActionPerformed
-        String cpfString = txtCpf.getText();
-        String nome = txtNome.getText();
+    String cpfApenasNumeros = txtCpf.getText().replaceAll("[^\\d]", "");
 
-          if (!campoCpfValido(cpfString)) {
+    if (cpfApenasNumeros.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "O campo CPF não pode estar vazio.", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    long cpf = Long.parseLong(cpfApenasNumeros);
+
+    if (this.clienteDAO.consultar(cpf) != null) {
+        JOptionPane.showMessageDialog(this, "Este CPF já está cadastrado!", "CPF Duplicado", JOptionPane.ERROR_MESSAGE);
+        return; // Interrompe a execução para não salvar
+    }
+
+    String nome = txtNome.getText().trim();
+    String end = txtEndereco.getText().trim();
+    String cidade = txtCidade.getText().trim();
+    String estado = txtEstado.getText().trim();
+
+    long tel;
+    int numero;
+    try {
+        tel = Long.parseLong(txtTelefone.getText().trim());
+        numero = Integer.parseInt(txtNumero.getText().trim());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this,
+                "Os campos 'Telefone' e 'Numero' devem conter apenas dígitos.",
+                "Erro de Entrada",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+
+    if (!campoCpfValido(cpfApenasNumeros)) {
         JOptionPane.showMessageDialog(this, "CPF inválido! Digite 11 números.", "Erro", JOptionPane.ERROR_MESSAGE);
         return;
     }
-      if (nome.trim().isEmpty()) {
+
+    if (nome.trim().isEmpty()) {
         JOptionPane.showMessageDialog(this, "O nome não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
         return;
     }
-    
-      long cpf = Long.parseLong(cpfString); 
-      
-      Cliente c = new Cliente(cpf, nome);
 
+    Cliente c = new Cliente(cpf, nome, tel, end, numero, cidade, estado);
+    this.clienteDAO.cadastrar(c);
 
-    
     limparCampos();
-    DefaultTableModel model = (DefaultTableModel) tabelaClientes.getModel();
-    model.addRow(new Object[]{nome, cpf});
-        JOptionPane.showMessageDialog(this, "Dados salvos com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
+    carregarTabela();
 
+    JOptionPane.showMessageDialog(this, "Cliente salvo com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_btnSalvarActionPerformed
 
-    private void txtCpfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCpfActionPerformed
-
-    }//GEN-LAST:event_txtCpfActionPerformed
-
     private void tabelaClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabelaClientesMouseClicked
-        int linhaSelecionada = tabelaClientes.getSelectedRow();
-        if (linhaSelecionada == -1) return; // nada selecionado
+    int linhaSelecionada = tabelaClientes.getSelectedRow();
 
-        Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
-        String nome = String.valueOf(tabelaClientes.getValueAt(linhaSelecionada, 0));
+    if (linhaSelecionada == -1) {
+        return;
+    }
 
-        txtNome.setText(nome);
-        txtCpf.setText(String.valueOf(cpf));
+    Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
+
+    Cliente cliente = this.clienteDAO.consultar(cpf);
+
+    if (cliente != null) {
+        txtNome.setText(cliente.getNome());
         
+        txtCpf.setText(String.format("%011d", cliente.getCpf())); 
+        
+        txtTelefone.setText(String.valueOf(cliente.getTel()));
+        txtEndereco.setText(cliente.getEnd());
+        txtNumero.setText(String.valueOf(cliente.getNumero()));
+        txtCidade.setText(cliente.getCidade());
+        txtEstado.setText(cliente.getEstado());
+        txtCpf.setEditable(false); 
+
+    }
+
     }//GEN-LAST:event_tabelaClientesMouseClicked
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
         int linhaSelecionada = tabelaClientes.getSelectedRow();
-        if (linhaSelecionada == -1) return; // nada selecionado
+        if (linhaSelecionada == -1) {
+            JOptionPane.showMessageDialog(this, "Selecione um cliente para excluir!");
+            return;
+        }
+
         Long cpf = (Long) tabelaClientes.getValueAt(linhaSelecionada, 1);
-       
-        
 
+        int confirm = JOptionPane.showConfirmDialog(this,
+                "Deseja realmente excluir o cliente com CPF " + cpf + "?",
+                "Confirmação", JOptionPane.YES_NO_OPTION);
 
+        if (confirm == JOptionPane.YES_OPTION) {
+            clienteDAO.excluir(cpf);
+            carregarTabela();
+        }
+        limparCampos();
     }//GEN-LAST:event_btnExcluirActionPerformed
+
+    private void txtCpfActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCpfActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCpfActionPerformed
+
+    private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+    String cpfString = txtCpf.getText();
+
+    if (cpfString.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Nenhum cliente selecionado para editar.", "Atenção", JOptionPane.WARNING_MESSAGE);
+        return;
+    }
+    
+    long cpf = Long.parseLong(cpfString.replaceAll("[^\\d]", ""));
+
+    String nome = txtNome.getText().trim();
+    long tel;
+    int numero;
+    try {
+        tel = Long.parseLong(txtTelefone.getText().trim());
+        numero = Integer.parseInt(txtNumero.getText().trim());
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this,
+                "Os campos 'Telefone' e 'Numero' devem conter apenas dígitos.",
+                "Erro de Entrada",
+                JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    String end = txtEndereco.getText().trim();
+    String cidade = txtCidade.getText().trim();
+    String estado = txtEstado.getText().trim();
+
+    if (nome.trim().isEmpty()) {
+        JOptionPane.showMessageDialog(this, "O nome não pode estar vazio!", "Erro", JOptionPane.ERROR_MESSAGE);
+        return;
+    }
+    
+    Cliente clienteAtualizado = new Cliente(cpf, nome, tel, end, numero, cidade, estado);
+
+    this.clienteDAO.alterar(clienteAtualizado);
+
+    limparCampos();
+    carregarTabela();
+
+    JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!", "Sucesso", JOptionPane.INFORMATION_MESSAGE);        
+    }//GEN-LAST:event_btnEditarActionPerformed
+
+    private void txtNumeroActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNumeroActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtNumeroActionPerformed
+
+    private void btnNovoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNovoActionPerformed
+        // TODO add your handling code here:
+        limparCampos();
+
+    }//GEN-LAST:event_btnNovoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -292,28 +484,61 @@ int opcao = JOptionPane.showConfirmDialog(
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnExcluir;
+    private javax.swing.JButton btnNovo;
     private javax.swing.JButton btnSalvar;
     private javax.swing.JMenu jMenu1;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JLabel lblCidade;
     private javax.swing.JLabel lblCpf;
+    private javax.swing.JLabel lblEndereco;
+    private javax.swing.JLabel lblEstado;
     private javax.swing.JLabel lblNome;
+    private javax.swing.JLabel lblNumero;
+    private javax.swing.JLabel lblTelefone;
     private javax.swing.JMenu menuItemSair;
     private javax.swing.JMenuItem menuSubItemSair;
     private javax.swing.JTable tabelaClientes;
-    private javax.swing.JTextField txtCpf;
+    private javax.swing.JTextField txtCidade;
+    private javax.swing.JFormattedTextField txtCpf;
+    private javax.swing.JTextField txtEndereco;
+    private javax.swing.JTextField txtEstado;
     private javax.swing.JTextField txtNome;
+    private javax.swing.JTextField txtNumero;
+    private javax.swing.JTextField txtTelefone;
     // End of variables declaration//GEN-END:variables
 
-    private boolean campoCpfValido(String cpf) {
-    cpf = cpf.replaceAll("[^\\d]", "");
-
-    return cpf.matches("\\d{11}");
+   private boolean campoCpfValido(String cpfNumerico) {
+    // Não precisa mais do replaceAll aqui, pois a string já chega limpa.
+    return cpfNumerico.matches("\\d{11}");
 }
-    
-    private void limparCampos(){
+
+    private void limparCampos() {
         txtCpf.setText("");
         txtNome.setText("");
+        txtCidade.setText("");
+        txtEndereco.setText("");
+        txtNumero.setText("");
+        txtTelefone.setText("");
+        txtEstado.setText("");
+        txtCpf.setEditable(true); 
+    }
+
+    private void carregarTabela() {
+        DefaultTableModel model = (DefaultTableModel) tabelaClientes.getModel();
+        model.setRowCount(0);
+        for (Cliente c : clienteDAO.buscarTodos()) {
+            model.addRow(new Object[]{
+                c.getNome(),
+                c.getCpf(),
+                c.getTel(),
+                c.getNumero(),
+                c.getEnd(),
+                c.getCidade(),
+                c.getEstado()
+            });
+        }
     }
 }
