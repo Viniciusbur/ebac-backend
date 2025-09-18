@@ -39,5 +39,6 @@ public class Main {
 
         System.out.println("\nLista de mulheres:");
         mulheres.forEach(System.out::println);
+
     }
 }
